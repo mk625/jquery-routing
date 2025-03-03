@@ -1,46 +1,31 @@
-
-
 $j(document).ready(function () {
-    var basePath = "/2) MK/1) Personal-Practice"; // Your base path
-
-    function getRelativePath(url) {
-        return url.startsWith(basePath) ? url.replace(basePath, "") || "/" : "/";
-    }
-
-    function loadPage(url) {
-        var relativePath = getRelativePath(url);
-
-        if (relativePath === "/") {
+    function loadPage(hash) {
+        if (!hash || hash === "#/") {
             $j("#dynamic-page-holder").html("<h2>Home Page</h2>");
-        } else if (relativePath === "/page-1") {
+        } else if (hash === "#/page-1") {
             $j("#dynamic-page-holder").html("<h2>Page 1</h2>");
-        } else if (relativePath === "/page-2") {
+        } else if (hash === "#/page-2") {
             $j("#dynamic-page-holder").html("<h2>Page 2</h2>");
-        } else if (relativePath === "/settings") {
-            $j("#dynamic-page-holder").html("<h2>Settings Page</h2>");
         } else {
             $j("#dynamic-page-holder").html("<h2>404 - Page Not Found</h2>");
         }
     }
 
-    function navigate(url) {
-        var fullPath = basePath + url;
-        history.pushState({ page: fullPath }, null, fullPath);
-        loadPage(fullPath);
+    function navigate(hash) {
+        window.location.hash = hash;
+        loadPage(hash);
     }
 
-    $j(window).on("popstate", function () {
-        loadPage(window.location.pathname);
+    $j(window).on("hashchange", function () {
+        loadPage(window.location.hash);
     });
 
     $j(".nav-btn").on("click", function (e) {
         e.preventDefault();
-        var url = $j(this).attr("data-page");
-        navigate(url);
+        var hash = "#/" + $j(this).attr("data-page").replace("/", "");
+        navigate(hash);
     });
 
-    // Ensure the correct page loads on refresh
-    loadPage(window.location.pathname);
+    loadPage(window.location.hash);
 });
-
 
